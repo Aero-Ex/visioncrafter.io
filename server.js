@@ -6,7 +6,7 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 8080; // Use environment variable for port
+const PORT = process.env.PORT || 10000; // Use environment variable for port
 
 const API_BASE_URL = 'https://api.a4f.co/v1';
 
