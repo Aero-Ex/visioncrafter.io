@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
                 if (document.querySelector(`input[name="${paramName}"]:checked`)?.disabled) {
-                    document.querySelector(`input[name="${paramName}"]:not(:disabled)`)?.checked = true;
+                    document.querySelector(`input[name="${paramName}"]:not(:disabled)`)?.checked == true;
                 }
             }
         }
