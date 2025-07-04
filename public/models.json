@@ -1,0 +1,192 @@
+{
+  "models": {
+    "provider-3/FLUX.1-dev": {
+      "name": "FLUX.1 Dev (Provider 3)",
+      "type": "generation",
+      "family": "flux_dev",
+      "params": {
+        "prompt": { "type": "textarea", "required": true },
+        "negative_prompt": { "type": "textarea" },
+        "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 1 },
+        "size": { "type": "select", "options": ["1024x1024", "512x512", "1280x768"], "default": "1024x1024" },
+        "num_inference_steps": { "type": "range", "min": 10, "max": 50, "default": 28 },
+        "guidance_scale": { "type": "range", "min": 1, "max": 10, "step": 0.1, "default": 3.5 },
+        "seed": { "type": "number", "default": -1 },
+        "nsfw_toggle": { "type": "boolean", "default": false, "api_name": "enable_safety_checker", "value_map": { "true": false, "false": true } },
+        "image": { "type": "file", "api_name": "image" },
+        "strength": { "type": "range", "min": 0.1, "max": 1.0, "step": 0.01, "default": 0.7 }
+      }
+    },
+    "provider-3/FLUX.1-schnell": {
+        "name": "FLUX.1 Schnell (Provider 3)",
+        "type": "generation",
+        "family": "flux_dev",
+        "params": {
+            "prompt": { "type": "textarea", "required": true },
+            "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 1 },
+            "size": { "type": "select", "options": ["1024x1024"], "default": "1024x1024" }
+        }
+    },
+    "provider-4/imagen-3": {
+      "name": "Imagen 3 (Provider 4)",
+      "type": "generation",
+      "family": "imagen",
+      "params": {
+        "prompt": { "type": "textarea", "required": true },
+        "negative_prompt": { "type": "textarea" },
+        "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 4, "api_name": "number_of_images" },
+        "aspect_ratio": { "type": "select", "options": ["1:1", "16:9", "9:16", "4:3", "3:4"], "default": "1:1" },
+        "style": { "type": "select", "options": ["photograph", "digital_art", "landscape", "sketch", "watercolor", "cyberpunk", "pop_art"], "default": "photograph" },
+        "enhance_prompt": { "type": "boolean", "default": true },
+        "seed": { "type": "number", "default": -1 }
+      }
+    },
+    "provider-4/imagen-4": {
+        "name": "Imagen 4 (Provider 4)",
+        "type": "generation",
+        "family": "imagen",
+        "params": {
+            "prompt": { "type": "textarea", "required": true },
+            "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 2 },
+            "aspect_ratio": { "type": "select", "options": ["1:1", "16:9", "9:16", "4:3", "3:4"], "default": "1:1" }
+        }
+    },
+    "provider-1/FLUX.1-dev": {
+        "name": "FLUX.1 Dev (Provider 1)",
+        "type": "generation",
+        "family": "flux_dev",
+        "params": {
+            "prompt": { "type": "textarea", "required": true },
+            "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 1 },
+            "size": { "type": "select", "options": ["1024x1024"], "default": "1024x1024" }
+        }
+    },
+    "provider-3/flux-kontext-pro": {
+        "name": "FLUX Kontext Pro (Provider 3)",
+        "type": "generation",
+        "family": "flux_pro",
+        "params": {
+            "prompt": { "type": "textarea", "required": true },
+            "image": { "type": "file", "required": true },
+            "mask": { "type": "file" },
+            "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 1 }
+        }
+    },
+    "provider-3/FLUX.1.1-pro-ultra-raw": {
+        "name": "FLUX Pro ultra (Provider 5)",
+        "type": "generation",
+        "family": "flux_pro",
+        "params": {
+            "prompt": { "type": "textarea", "required": true },
+            "image": { "type": "file", "required": true },
+            "mask": { "type": "file" },
+            "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 1 }
+        }
+    },
+    "provider-1/FLUX.1-schnell": {
+        "name": "FLUX.1 Schnell (Provider 1)",
+        "type": "generation",
+        "family": "flux_dev",
+        "params": {
+            "prompt": { "type": "textarea", "required": true },
+            "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 1 },
+            "size": { "type": "select", "options": ["1024x1024"], "default": "1024x1024" }
+        }
+    },
+    "provider-1/FLUX.1.1-pro": {
+      "name": "FLUX.1.1 Pro (Provider 1)",
+      "type": "generation",
+      "family": "flux_pro",
+      "params": {
+        "prompt": { "type": "textarea", "required": true },
+        "negative_prompt": { "type": "textarea" },
+        "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 1 },
+        "width": { "type": "number", "default": 1024, "step": 32 },
+        "height": { "type": "number", "default": 1024, "step": 32 },
+        "steps": { "type": "range", "min": 1, "max": 50, "default": 40 },
+        "guidance": { "type": "range", "min": 1.5, "max": 5, "step": 0.1, "default": 2.5 },
+        "prompt_upsampling": { "type": "boolean", "default": false },
+        "seed": { "type": "number", "default": -1 },
+        "nsfw_toggle": { "type": "boolean", "default": false, "api_name": "safety_tolerance", "value_map": { "true": 6, "false": 2 } }
+      }
+    },
+    "provider-2/FLUX.1.1-pro": {
+        "name": "FLUX.1.1 Pro (Provider 2)",
+        "type": "generation",
+        "family": "flux_pro",
+        "params": {
+            "prompt": { "type": "textarea", "required": true },
+            "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 1 },
+            "width": { "type": "number", "default": 1024, "step": 32 },
+            "height": { "type": "number", "default": 1024, "step": 32 }
+        }
+    },
+    "provider-2/FLUX.1-kontext-max": {
+        "name": "FLUX Kontext Max (Provider 2)",
+        "type": "generation",
+        "family": "flux_dev",
+        "params": {
+            "prompt": { "type": "textarea", "required": true },
+            "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 1 },
+            "size": { "type": "select", "options": ["1024x1024"], "default": "1024x1024" }
+        }
+    },
+    "provider-2/FLUX.1-schnell-v2": {
+        "name": "FLUX.1 Schnell v2 (Provider 2)",
+        "type": "generation",
+        "family": "flux_dev",
+        "params": {
+            "prompt": { "type": "textarea", "required": true },
+            "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 1 },
+            "size": { "type": "select", "options": ["1024x1024"], "default": "1024x1024" }
+        }
+    },
+    "provider-2/FLUX.1-schnell": {
+        "name": "FLUX.1 Schnell (Provider 2)",
+        "type": "generation",
+        "family": "flux_dev",
+        "params": {
+            "prompt": { "type": "textarea", "required": true },
+            "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 1 },
+            "size": { "type": "select", "options": ["1024x1024"], "default": "1024x1024" }
+        }
+    },
+    "provider-2/FLUX.1-dev": {
+        "name": "FLUX.1 Dev (Provider 2)",
+        "type": "generation",
+        "family": "flux_dev",
+        "params": {
+            "prompt": { "type": "textarea", "required": true },
+            "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 1 },
+            "size": { "type": "select", "options": ["1024x1024"], "default": "1024x1024" }
+        }
+    },
+    "provider-5/gpt-image-1": {
+      "name": "GPT-Image 1 (Provider 5)",
+      "type": "generation",
+      "family": "gpt",
+      "params": {
+        "prompt": { "type": "textarea", "required": true },
+        "negative_prompt": { "type": "textarea" },
+        "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 10 },
+        "size": { "type": "select", "options": ["1024x1024", "1536x1024", "1024x1536"], "default": "1024x1024" },
+        "quality": { "type": "select", "options": ["standard", "hd", "low", "medium"], "default": "hd" },
+        "style": { "type": "select", "options": ["vivid", "natural"], "default": "vivid" },
+        "background": { "type": "select", "options": ["auto", "transparent", "opaque"], "default": "auto" },
+        "seed": { "type": "number", "default": -1 },
+        "nsfw_toggle": { "type": "boolean", "default": false, "api_name": "moderation", "value_map": { "true": "low", "false": "auto" } }
+      }
+    },
+  "provider-6/i2vgen-xl": {
+        "name": "i2vgen-xl (Provider 6)",
+        "base_model": "i2vgen-xl",
+        "type": "video",
+        "params": {
+            "prompt": { "type": "textarea", "required": true },
+            "n": { "type": "radio", "options": [1, 2, 3, 4], "default": 1, "max": 4 },
+            "duration": { "type": "select", "options": [4], "default": 4 },
+            "quality": { "type": "select", "options": ["480p"], "default": "480p" },
+            "ratio": { "type": "select", "options": ["1:1", "16:9", "9:16", "3:4", "4:3"], "default": "1:1" }
+        }
+  }}
+}

@@ -1,0 +1,40 @@
+/* --- RESPONSIVE STYLES --- */
+
+/* Tablet & Smaller Desktop (<= 1200px) */
+@media (max-width: 1200px) {
+    body { overflow-y: auto; }
+    .container { height: auto; min-height: 95vh; margin: 2.5vh auto; }
+    .content-grid { flex-direction: column; overflow-y: visible; gap: var(--space-lg); }
+    .card--form { width: 100%; order: 1; }
+    .card--history { order: 2; min-height: 500px; }
+}
+
+/* Mobile Devices (<= 768px) */
+@media (max-width: 768px) {
+    :root {
+        --space-sm: 10px;
+        --space-md: 20px;
+        --space-lg: 25px;
+        --space-xl: 15px;
+    }
+    .header { flex-direction: column; gap: var(--space-md); text-align: center; }
+    .logo { font-size: 42px; }
+    .toggle-container { padding: 0 var(--space-sm); }
+    .toggle-switch { width: 100%; max-width: 480px; height: 45px; }
+    .toggle-switch__option { line-height: 45px; font-size: 16px; }
+    .toggle-switch__handle { height: 35px; }
+    .card { padding: var(--space-md); }
+    .settings-grid { grid-template-columns: 1fr; }
+    .history-section__grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-sm); }
+}
+
+/* Very Small Mobile Devices (<= 480px) */
+@media (max-width: 480px) {
+    .user-profile { gap: var(--space-sm); flex-direction: column; }
+    .user-profile__avatar { width: 60px; height: 60px; }
+    .user-profile__name { font-size: 18px; }
+    .btn-group { flex-wrap: wrap; }
+    .btn-group label.btn { flex-basis: 40%; }
+    .btn--primary { padding: 12px; font-size: 16px; }
+    .history-section__header { flex-direction: column; align-items: flex-start; gap: var(--space-sm); }
+}
