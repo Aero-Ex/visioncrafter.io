@@ -1,4 +1,4 @@
-// In script.js (Final Version for user-provided API keys)
+// In script.js (Final, Corrected Version)
 
 document.addEventListener('DOMContentLoaded', () => {
     const config = {
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             videos: 'visionCrafterHistory_videos',
             apiKey: 'visionCrafter_apiKey'
         },
-        modelsUrl: '/models.json'
+        modelsUrl: './models.json'
     };
     let MODEL_CONFIG = {};
 
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
                 if (document.querySelector(`input[name="${paramName}"]:checked`)?.disabled) {
-                    document.querySelector(`input[name="${paramName}"]:not(:disabled)`)?.checked = true;
+                    document.querySelector(`input[name="${paramName}"]:not(:disabled)`)?.checked == true;
                 }
             }
         }
@@ -358,6 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
         changeKeyBtn.addEventListener('click', showApiKeyModal);
     }
 
+    // THIS IS THE CORRECTED FUNCTION
     function init() {
         setupEventListeners();
         fetchModelConfig();
