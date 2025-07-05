@@ -1,4 +1,4 @@
-// In script.js (Final Version with Self-Cleaning History)
+// In script.js (Final Version with LocalStorage Webhook URL)
 
 document.addEventListener('DOMContentLoaded', () => {
     const config = {
@@ -15,9 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     let MODEL_CONFIG = {};
 
-    // --- ELEMENT SELECTORS (omitted for brevity, they are unchanged) ---
+    // --- ELEMENT SELECTORS ---
     const generationForm = document.getElementById('image-generator-form');
-    const modelSelect = document.getElementById('model-select');
     const generateBtn = document.getElementById('generate-btn');
     const historyGrid = document.getElementById('history-grid');
     const historyPlaceholder = historyGrid.querySelector('.history-section__placeholder');
@@ -33,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveApiKeyBtn = document.getElementById('save-api-key-btn');
     const changeKeyBtn = document.getElementById('change-key-btn');
     
-    // --- (Functions for API key modal, API requests, form submissions are unchanged) ---
+    // --- API KEY MODAL ---
     function showApiKeyModal() { apiKeyModal.classList.add('show'); }
     function hideApiKeyModal() { apiKeyModal.classList.remove('show'); }
     function saveApiKey() {
@@ -45,6 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please enter a valid API key.');
         }
     }
+
+    // --- CORE API LOGIC ---
     async function handleApiRequest(endpoint, payload, button, gridElement, placeholderElement, storageKey) {
         const apiKey = localStorage.getItem(config.storageKeys.apiKey);
         if (!apiKey) {
@@ -91,16 +92,20 @@ document.addEventListener('DOMContentLoaded', () => {
             setButtonState(button, `<span class="icon">✨</span>${gridElement.id.includes('video') ? 'Generate Video' : 'Generate'}`, false);
         }
     }
+
     function setButtonState(button, text, disabled) {
         button.innerHTML = text;
         button.disabled = disabled;
     }
+
+    // --- FORM HANDLERS ---
     async function handleGenerationFormSubmit(e) {
         e.preventDefault();
-        const modelId = modelSelect.value;
+        const modelId = document.getElementById('model-select-value').value;
         const payload = buildApiPayload(generationForm, modelId);
         handleApiRequest(config.api.imageGeneration, payload, generateBtn, historyGrid, historyPlaceholder, config.storageKeys.images);
     }
+    
     async function handleVideoFormSubmit(e) {
         e.preventDefault();
         const modelId = document.getElementById('video-model-select').value;
@@ -111,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         handleApiRequest(config.api.videoGeneration, payload, videoGenerateBtn, videoHistoryGrid, videoHistoryPlaceholder, config.storageKeys.videos);
     }
+
     function buildApiPayload(formElement, modelId) {
         const formData = new FormData(formElement);
         const model = MODEL_CONFIG[modelId];
@@ -132,6 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return payload;
     }
+
+    // --- MODEL AND UI CONFIGURATION ---
     async function fetchModelConfig() {
         try {
             const response = await fetch(config.modelsUrl);
@@ -144,14 +152,36 @@ document.addEventListener('DOMContentLoaded', () => {
             alert("Error: Could not load model configurations. The application cannot start.");
         }
     }
+    
     function initializeForms() {
         const imageModels = Object.keys(MODEL_CONFIG).filter(id => MODEL_CONFIG[id].type === 'generation');
-        populateSelect(modelSelect, imageModels, id => MODEL_CONFIG[id].name);
+        const modelGrid = document.getElementById('model-selection-grid');
+        const modelSelectValueInput = document.getElementById('model-select-value');
+        modelGrid.innerHTML = '';
+        imageModels.forEach((modelId, index) => {
+            const model = MODEL_CONFIG[modelId];
+            const card = document.createElement('div');
+            card.className = 'model-card';
+            card.dataset.modelId = modelId;
+            const imageUrl = model.image_url || '';
+            card.innerHTML = `<div class="model-card__bg-image" style="background-image: url('${imageUrl}')"></div><div class="model-card__overlay"><div class="model-card__title">${model.name}</div></div><div class="model-card__checkmark">✓</div>`;
+            card.addEventListener('click', () => {
+                modelGrid.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                modelSelectValueInput.value = modelId;
+                updateUISettings();
+            });
+            modelGrid.appendChild(card);
+            if (index === 0) {
+                card.click();
+            }
+        });
         const videoModels = Object.keys(MODEL_CONFIG).filter(id => MODEL_CONFIG[id].type === 'video');
         populateSelect(document.getElementById('video-model-select'), videoModels, id => MODEL_CONFIG[id].name);
-        updateUISettings();
     }
+    
     function populateSelect(selectElement, options, textAccessor = val => val) {
+        if (!selectElement) return;
         selectElement.innerHTML = '';
         options.forEach(optionValue => {
             const option = document.createElement('option');
@@ -160,8 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
             selectElement.appendChild(option);
         });
     }
+
     function updateUISettings() {
-        const selectedModelId = modelSelect.value;
+        const selectedModelId = document.getElementById('model-select-value').value;
         if (!selectedModelId || !MODEL_CONFIG[selectedModelId]) return;
         const model = MODEL_CONFIG[selectedModelId];
         const params = model.params;
@@ -187,16 +218,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         label.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
                     }
                 });
-                if (document.querySelector(`input[name="${paramName}"]:checked`)?.disabled) {
-                    document.querySelector(`input[name="${paramName}"]:not(:disabled)`)?.checked == true;
+                const checkedRadio = document.querySelector(`input[name="${paramName}"]:checked`);
+                if (checkedRadio && checkedRadio.disabled) {
+                     const firstEnabledRadio = document.querySelector(`input[name="${paramName}"]:not(:disabled)`);
+                     if(firstEnabledRadio) firstEnabledRadio.checked = true;
                 }
             }
         }
     }
 
-    // --- HISTORY MANAGEMENT (MODIFIED) ---
-
-    // ✅ MODIFIED: addHistoryItem now passes down the grid and key
+    // --- HISTORY MANAGEMENT ---
     function addHistoryItem(mediaData, gridElement, storageKey) {
         const historyItemElement = createHistoryItem(mediaData, gridElement, storageKey);
         if (historyItemElement) {
@@ -207,7 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ✅ MODIFIED: createHistoryItem now accepts the grid and key, and has a new onerror handler
     function createHistoryItem(mediaData, gridElement, storageKey) {
         if (!mediaData || !mediaData.src) return null;
         
@@ -228,15 +258,12 @@ document.addEventListener('DOMContentLoaded', () => {
             mediaElement.onload = () => wrapper.classList.remove('history-item-wrapper--loading');
         }
         
-        // THIS IS THE SELF-CLEANING LOGIC
         mediaElement.onerror = () => {
             console.warn(`Failed to load history item: ${mediaData.src}. Removing from history.`);
-            wrapper.remove(); // 1. Remove the broken element from the page
-            saveHistory(gridElement, storageKey); // 2. Re-save the history, which is now clean
-
-            // 3. If the grid is now empty, show the placeholder text again
+            wrapper.remove();
+            saveHistory(gridElement, storageKey);
             const placeholder = gridElement.querySelector('.history-section__placeholder');
-            if (gridElement.childElementCount <= 1 && placeholder) { // <= 1 because placeholder itself is a child
+            if (gridElement.childElementCount <= 1 && placeholder) {
                 placeholder.style.display = 'flex';
             }
         };
@@ -244,10 +271,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const overlay = document.createElement('div');
         overlay.className = 'item-overlay';
         const fileExtension = isVideo ? 'mp4' : 'png';
+
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
         let buttonsHTML = `<a href="${mediaData.src}" download="visioncrafter_${Date.now()}.${fileExtension}" class="overlay-btn" title="Download">📥</a><button class="overlay-btn" data-action="delete" title="Delete">🗑️</button>`;
+
         if (!isVideo) {
             buttonsHTML += `<button class="overlay-btn" data-action="view" title="View Fullscreen">👁️</button>`;
         }
+
+        if (isAdmin) {
+            buttonsHTML += `<button class="overlay-btn" data-action="share-instagram" title="Share to Instagram">📸</button>`;
+        }
+        
         overlay.innerHTML = buttonsHTML;
         
         wrapper.appendChild(mediaElement);
@@ -266,7 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(storageKey, JSON.stringify(historyItems.slice(0, 50)));
     }
 
-    // ✅ MODIFIED: loadHistory now passes down the grid and key
     function loadHistory(gridElement, placeholderElement, storageKey) {
         const savedHistory = JSON.parse(localStorage.getItem(storageKey) || '[]');
         if (savedHistory.length > 0) {
@@ -278,23 +313,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- EVENT LISTENERS (UNCHANGED) ---
+    // --- EVENT LISTENERS ---
     function setupEventListeners() {
         const toggleSwitch = document.querySelector('.toggle-switch');
-        toggleSwitch.addEventListener('click', () => {
-            toggleSwitch.classList.toggle('active');
-            const isVideoActive = toggleSwitch.classList.contains('active');
-            document.getElementById('generation-view').style.display = isVideoActive ? 'none' : 'flex';
-            document.getElementById('video-generation-view').style.display = isVideoActive ? 'flex' : 'none';
-            toggleSwitch.querySelectorAll('.toggle-switch__option').forEach((opt, i) => {
-                opt.classList.toggle('toggle-switch__option--active', i === (isVideoActive ? 1 : 0));
+        if (toggleSwitch) {
+            toggleSwitch.addEventListener('click', () => {
+                toggleSwitch.classList.toggle('active');
+                const isVideoActive = toggleSwitch.classList.contains('active');
+                document.getElementById('generation-view').style.display = isVideoActive ? 'none' : 'flex';
+                document.getElementById('video-generation-view').style.display = isVideoActive ? 'flex' : 'none';
+                toggleSwitch.querySelectorAll('.toggle-switch__option').forEach((opt, i) => {
+                    opt.classList.toggle('toggle-switch__option--active', i === (isVideoActive ? 1 : 0));
+                });
             });
-        });
+        }
+        
         const advancedSettingsHeader = document.querySelector('.advanced-settings__header');
-        advancedSettingsHeader.addEventListener('click', () => {
-            advancedSettingsHeader.classList.toggle('active');
-            advancedSettingsHeader.nextElementSibling.classList.toggle('show');
-        });
+        if (advancedSettingsHeader) {
+            advancedSettingsHeader.addEventListener('click', () => {
+                advancedSettingsHeader.classList.toggle('active');
+                advancedSettingsHeader.nextElementSibling.classList.toggle('show');
+            });
+        }
+        
         document.querySelectorAll('.range-group').forEach(group => {
             const rangeInput = group.querySelector('input[type="range"]');
             const numberInput = group.querySelector('input[type="number"]');
@@ -308,49 +349,97 @@ document.addEventListener('DOMContentLoaded', () => {
             numberInput.addEventListener('input', () => { rangeInput.value = numberInput.value; updateRangeVisual(); });
             updateRangeVisual();
         });
-        modelSelect.addEventListener('change', updateUISettings);
+        
         generationForm.addEventListener('submit', handleGenerationFormSubmit);
         videoForm.addEventListener('submit', handleVideoFormSubmit);
+        
         document.getElementById('random-seed-btn').addEventListener('click', () => {
             document.getElementById('seed-input').value = Math.floor(Math.random() * 1000000000);
         });
+
         document.body.addEventListener('click', (e) => {
             const wrapper = e.target.closest('.history-item-wrapper');
             if (!wrapper) return;
             const button = e.target.closest('button.overlay-btn');
-            if (button) {
-                e.preventDefault(); e.stopPropagation();
-                const action = button.dataset.action;
-                if (action === 'delete') {
-                    if (confirm('Are you sure you want to delete this item?')) {
-                        const grid = wrapper.parentElement;
-                        wrapper.remove();
-                        const storageKey = grid.id === 'history-grid' ? config.storageKeys.images : config.storageKeys.videos;
-                        const placeholder = grid.querySelector('.history-section__placeholder');
-                        saveHistory(grid, storageKey);
-                        if (grid.childElementCount <= 1 && placeholder) {
-                             placeholder.style.display = 'flex';
-                        }
+            if (!button) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+            const action = button.dataset.action;
+
+            if (action === 'delete') {
+                if (confirm('Are you sure you want to delete this item?')) {
+                    const grid = wrapper.parentElement;
+                    wrapper.remove();
+                    const storageKey = grid.id === 'history-grid' ? config.storageKeys.images : config.storageKeys.videos;
+                    const placeholder = grid.querySelector('.history-section__placeholder');
+                    saveHistory(grid, storageKey);
+                    if (grid.childElementCount <= 1 && placeholder) {
+                         placeholder.style.display = 'flex';
                     }
-                } else if (action === 'view') {
-                    const media = wrapper.querySelector('img');
-                    if(media && media.src) {
-                        lightboxImage.src = media.src;
-                        lightboxImage.alt = media.alt;
-                        lightboxModal.classList.add('show');
-                    }
+                }
+            } else if (action === 'view') {
+                const media = wrapper.querySelector('img');
+                if(media && media.src) {
+                    lightboxImage.src = media.src;
+                    lightboxImage.alt = media.alt;
+                    lightboxModal.classList.add('show');
+                }
+            } else if (action === 'share-instagram') {
+                const imageUrl = wrapper.querySelector('img, video')?.src;
+                const prompt = wrapper.dataset.prompt;
+
+                if (!imageUrl || !prompt) {
+                    return alert('Error: Image URL or prompt not found.');
+                }
+                
+                // Get the webhook URL from localStorage.
+                const n8nWebhookUrl = localStorage.getItem('n8nWebhookUrl');
+
+                // If the URL isn't set, guide the developer on what to do.
+                if (!n8nWebhookUrl) {
+                    alert('Admin Action: n8n Webhook URL is not set.\nPlease set it in the console using: \nlocalStorage.setItem(\'n8nWebhookUrl\', \'YOUR_URL\');');
+                    return;
+                }
+
+                if (confirm('This will send the image to the Instagram posting queue. Continue?')) {
+                    button.innerHTML = '⏳';
+                    button.disabled = true;
+
+                    // Use the URL we retrieved from localStorage.
+                    fetch(n8nWebhookUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            imageUrl: imageUrl,
+                            prompt: prompt,
+                        })
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error(`Webhook failed with status: ${response.status}`);
+                        alert('Image sent to Instagram queue successfully!');
+                        button.innerHTML = '✅';
+                    })
+                    .catch(error => {
+                        console.error('Error sending to n8n webhook:', error);
+                        alert('Could not send image to the queue. Please try again.');
+                        button.innerHTML = '📸';
+                        button.disabled = false;
+                    });
                 }
             }
         });
+
         const closeModal = () => lightboxModal.classList.remove('show');
         lightboxClose.addEventListener('click', closeModal);
         lightboxModal.addEventListener('click', (e) => { if (e.target === lightboxModal) closeModal(); });
         document.addEventListener('keydown', (e) => { if (e.key === "Escape") closeModal(); });
+        
         saveApiKeyBtn.addEventListener('click', saveApiKey);
         changeKeyBtn.addEventListener('click', showApiKeyModal);
     }
 
-    // --- INITIALIZATION (UNCHANGED) ---
+    // --- INITIALIZATION ---
     function init() {
         setupEventListeners();
         fetchModelConfig();
