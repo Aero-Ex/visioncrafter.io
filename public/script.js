@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const checkedRadio = document.querySelector(`input[name="${paramName}"]:checked`);
                 if (checkedRadio && checkedRadio.disabled) {
                      const firstEnabledRadio = document.querySelector(`input[name="${paramName}"]:not(:disabled)`);
-                     if(firstEnabledRadio) firstEnabledRadio.checked = true;
+                     if(firstEnabledRadio) firstEnabledRadio.checked == true;
                 }
             }
         }
