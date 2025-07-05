@@ -55,11 +55,14 @@ app.post('/api/videos/generations', (req, res) => {
 
 // --- FRONT-END ROUTES ---
 app.get('/app', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    // UPDATED: This route now serves the renamed app page: app.html
+    res.sendFile(path.join(__dirname, 'public', 'app.html'));
 });
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'landing.html'));
+    // UPDATED: This now correctly serves the landing page, which is now index.html
+    // This also works perfectly with Render's default behavior.
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // --- SERVER START ---

@@ -1,0 +1,6 @@
+# Allow all web crawlers to access all content
+User-agent: *
+Disallow:
+
+# Point crawlers to the sitemap for a list of important pages
+Sitemap: https://visioncrafter-io.onrender.com/sitemap.xml

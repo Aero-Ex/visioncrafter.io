@@ -3,336 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisionCrafter.IO</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="responsive.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=KoHo:wght@400;700&family=Kode+Mono:wght@700&display=swap" rel="stylesheet">
     
+    <!-- ================== SEO & METADATA (LIVE VERSION) ================== -->
+    
+    <!-- Primary Meta Tags -->
+    <title>VisionCrafter.IO | Free AI Image & Video Generator (BYO Key)</title>
+    <meta name="description" content="Generate stunning AI images and videos for free using top models like FLUX and Imagen. Just bring your own API key. Secure, private, and powerful.">
+    <meta name="keywords" content="ai image generator, ai video generator, free ai generator, flux model, imagen model, bring your own key, byok, secure ai, visioncrafter">
+    <link rel="canonical" href="https://visioncrafter-io.onrender.com/" />
+
+    <!-- Open Graph / Facebook / Discord -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://visioncrafter-io.onrender.com/">
+    <meta property="og:title" content="VisionCrafter.IO | Free AI Image & Video Generator (BYO Key)">
+    <meta property="og:description" content="Generate stunning AI images and videos for free using top models like FLUX and Imagen. Just bring your own API key. Secure, private, and powerful.">
+    <meta property="og:image" content="https://visioncrafter-io.onrender.com/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://visioncrafter-io.onrender.com/">
+    <meta property="twitter:title" content="VisionCrafter.IO | Free AI Image & Video Generator (BYO Key)">
+    <meta property="twitter:description" content="Generate stunning AI images and videos for free using top models like FLUX and Imagen. Just bring your own API key. Secure, private, and powerful.">
+    <meta property="twitter:image" content="https://visioncrafter-io.onrender.com/og-image.png">
+
+    <!-- =================================================================== -->
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="landing.css">
+    <link href="https://fonts.googleapis.com/css2?family=KoHo&family=Kode+Mono:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <a href="/" class="logo-link">
-                <div class="logo">VisionCrafter.IO</div>
-            </a>
-            <div class="user-profile">
-                <button id="change-key-btn" class="btn btn--small">API Key</button>
-                <span class="user-profile__name">Aero_ex</span>
-                <div class="user-profile__avatar"></div>
-            </div>
+    <div class="landing-container">
+        <header class="landing-header">
+            <div class="logo">VisionCrafter.IO</div>
         </header>
 
-        <main class="main-content">
-            <div class="toggle-container">
-                <div class="toggle-switch">
-                    <div class="toggle-switch__option toggle-switch__option--active">Image Generation</div>
-                    <div class="toggle-switch__option">Video Generation</div>
-                    <div class="toggle-switch__handle"></div>
+        <main class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Craft Your Vision. Instantly.</h1>
+                <p class="hero-subtitle">The next generation of AI-powered image and video creation is here. Bring your own API key and unleash your creativity with state-of-the-art models at your fingertips.</p>
+                <a href="/app" class="hero-cta">✨ Launch App</a>
+                 <div class="support-us">
+                    <p>Enjoying the app? Consider supporting its development!</p>
+                    <a href="https://www.buymeacoffee.com/yourusername" target="_blank" rel="noopener"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" class="bmac-button"></a>
                 </div>
             </div>
-
-            <!-- Image Generation View -->
-            <div class="content-grid" id="generation-view" style="display: flex;">
-                <div class="card card--form">
-                    <form class="image-generator-form" id="image-generator-form">
-                        <div class="form-scroll-wrapper">
-                            <fieldset class="form-section">
-                                <div class="form-section__header">
-                                    <h2>AI Image Generator</h2>
-                                    <button type="button" class="link">Prompt Generator</button>
-                                </div>
-
-                                <div class="setting setting--vertical">
-                                    <label for="model-select" class="setting__label"><span class="icon">🧠</span>Model</label>
-                                    <select id="model-select" name="model" class="form-input form-input--select">
-                                        <option>Loading models...</option>
-                                    </select>
-                                </div>
-
-                                <div class="prompt-group mt-md">
-                                    <label for="prompt-input" class="visually-hidden">Prompt</label>
-                                    <textarea id="prompt-input" name="prompt" class="form-input form-input--textarea" placeholder="Enter your prompt here..." required></textarea>
-                                </div>
-                                <div class="prompt-group mt-sm">
-                                    <label for="negative-prompt-input" class="visually-hidden">Negative Prompt</label>
-                                    <textarea id="negative-prompt-input" name="negative_prompt" class="form-input form-input--textarea" placeholder="Enter things to avoid in the image..."></textarea>
-                                </div>
-                            </fieldset>
-
-                            <!-- ==== BASIC SETTINGS ==== -->
-                            <fieldset class="form-section settings-grid">
-                                <div class="setting model-settings" id="size-setting">
-                                    <label for="size-select" class="setting__label"><span class="icon">🏞️</span>Size</label>
-                                    <select id="size-select" name="size" class="form-input form-input--select"></select>
-                                </div>
-                                <div class="setting model-settings" id="aspect-ratio-setting">
-                                    <label for="aspect-ratio-select" class="setting__label"><span class="icon">🏞️</span>Aspect Ratio</label>
-                                    <select id="aspect-ratio-select" name="aspect_ratio" class="form-input form-input--select"></select>
-                                </div>
-                                <div class="setting model-settings" id="flux-pro-dimensions">
-                                    <div class="input-group">
-                                        <label for="width-input">W</label>
-                                        <input id="width-input" name="width" type="number" value="1024" step="32" class="form-input form-input--text">
-                                    </div>
-                                    <div class="input-group">
-                                        <label for="height-input">H</label>
-                                        <input id="height-input" name="height" type="number" value="1024" step="32" class="form-input form-input--text">
-                                    </div>
-                                </div>
-
-                                <div class="setting">
-                                    <label for="private-mode-toggle" class="setting__label"><span class="icon">🔒</span>Private Mode</label>
-                                    <label class="switch">
-                                        <input type="checkbox" id="private-mode-toggle">
-                                        <span class="switch__slider"></span>
-                                    </label>
-                                </div>
-                                <div class="setting setting--full-width">
-                                    <label id="num-images-label" class="setting__label"><span class="icon">🖼️</span>Num of Images</label>
-                                    <div class="btn-group" role="radiogroup" aria-labelledby="num-images-label">
-                                        <input type="radio" id="n1" name="n" value="1" checked><label for="n1" class="btn btn--small">1</label>
-                                        <input type="radio" id="n2" name="n" value="2"><label for="n2" class="btn btn--small">2</label>
-                                        <input type="radio" id="n3" name="n" value="3"><label for="n3" class="btn btn--small">3</label>
-                                        <input type="radio" id="n4" name="n" value="4"><label for="n4" class="btn btn--small">4</label>
-                                    </div>
-                                </div>
-                            </fieldset>
-
-                            <!-- ==== ADVANCED SETTINGS ==== -->
-                            <div class="advanced-settings">
-                                <div class="advanced-settings__header">
-                                    <span><span class="icon">⚙️</span>Advanced Settings</span>
-                                    <span class="arrow"></span>
-                                </div>
-                                <div class="advanced-settings__content">
-                                    
-                                    <fieldset class="form-section model-settings" id="dalle-gpt-settings">
-                                        <div class="setting setting--vertical">
-                                            <label for="quality-select-dalle" class="setting__label"><span class="icon">✨</span>Quality</label>
-                                            <select id="quality-select-dalle" name="quality" class="form-input form-input--select"></select>
-                                        </div>
-                                         <div class="setting setting--vertical mt-sm" id="style-setting">
-                                            <label for="style-select" class="setting__label"><span class="icon">🎨</span>Style</label>
-                                            <select id="style-select" name="style" class="form-input form-input--select">
-                                                <option value="vivid">Vivid</option>
-                                                <option value="natural">Natural</option>
-                                            </select>
-                                        </div>
-                                        <div class="setting setting--vertical mt-sm" id="background-setting">
-                                            <label for="background-select" class="setting__label"><span class="icon">🌌</span>Background</label>
-                                            <select id="background-select" name="background" class="form-input form-input--select">
-                                                <option value="auto">Auto</option>
-                                                <option value="transparent">Transparent</option>
-                                                <option value="opaque">Opaque</option>
-                                            </select>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset class="form-section model-settings" id="flux-dev-settings">
-                                         <div class="setting setting--vertical">
-                                            <label for="num-inference-steps" class="setting__label"><span class="icon">🔢</span>Num Inference Steps</label>
-                                            <div class="range-group">
-                                                <input id="num-inference-steps" name="num_inference_steps" type="range" class="form-input--range" min="10" max="50" value="28">
-                                                <input type="number" class="form-input form-input--small-text" value="28" min="10" max="50">
-                                            </div>
-                                        </div>
-                                        <div class="setting setting--vertical mt-sm">
-                                            <label for="guidance-scale" class="setting__label"><span class="icon">🎯</span>Guidance Scale</label>
-                                            <div class="range-group">
-                                                <input id="guidance-scale" name="guidance_scale" type="range" class="form-input--range" min="1" max="10" value="3.5" step="0.1">
-                                                <input type="number" class="form-input form-input--small-text" value="3.5" min="1" max="10" step="0.1">
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset class="form-section model-settings" id="flux-pro-settings">
-                                         <div class="setting setting--vertical">
-                                            <label for="steps" class="setting__label"><span class="icon">🔢</span>Denoising Steps</label>
-                                            <div class="range-group">
-                                                <input id="steps" name="steps" type="range" class="form-input--range" min="1" max="50" value="40">
-                                                <input type="number" class="form-input form-input--small-text" value="40" min="1" max="50">
-                                            </div>
-                                        </div>
-                                        <div class="setting setting--vertical mt-sm">
-                                            <label for="guidance" class="setting__label"><span class="icon">🎯</span>Guidance</label>
-                                            <div class="range-group">
-                                                <input id="guidance" name="guidance" type="range" class="form-input--range" min="1.5" max="5" value="2.5" step="0.1">
-                                                <input type="number" class="form-input form-input--small-text" value="2.5" min="1.5" max="5" step="0.1">
-                                            </div>
-                                        </div>
-                                        <div class="setting setting--vertical mt-sm">
-                                            <label for="prompt-upsampling-toggle" class="setting__label"><span class="icon">💡</span>Prompt Upsampling</label>
-                                            <label class="switch">
-                                                <input type="checkbox" id="prompt-upsampling-toggle" name="prompt_upsampling">
-                                                <span class="switch__slider"></span>
-                                            </label>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset class="form-section model-settings" id="imagen-settings">
-                                        <div class="setting setting--vertical">
-                                            <label for="imagen-style-select" class="setting__label"><span class="icon">🎨</span>Style</label>
-                                            <select id="imagen-style-select" name="style" class="form-input form-input--select">
-                                                <option value="">Default</option>
-                                                <option value="photograph">Photograph</option>
-                                                <option value="digital_art">Digital Art</option>
-                                                <option value="landscape">Landscape</option>
-                                                <option value="sketch">Sketch</option>
-                                                <option value="watercolor">Watercolor</option>
-                                                <option value="cyberpunk">Cyberpunk</option>
-                                                <option value="pop_art">Pop Art</option>
-                                            </select>
-                                        </div>
-                                        <div class="setting mt-sm">
-                                            <label for="enhance-prompt-toggle" class="setting__label"><span class="icon">💡</span>Enhance Prompt</label>
-                                            <label class="switch">
-                                                <input type="checkbox" id="enhance-prompt-toggle" name="enhance_prompt" checked>
-                                                <span class="switch__slider"></span>
-                                            </label>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset class="form-section">
-                                        <div class="setting">
-                                            <label for="seed-input" class="setting__label"><span class="icon">🌱</span>Seed</label>
-                                            <div class="input-group">
-                                                <input id="seed-input" name="seed" type="number" value="-1" class="form-input form-input--text" placeholder="Random">
-                                                <button type="button" class="btn btn--icon" id="random-seed-btn"><span class="icon">🔄</span></button>
-                                            </div>
-                                        </div>
-                                        <div class="setting mt-md">
-                                            <label for="nsfw-toggle" id="nsfw-label" class="setting__label"><span class="icon">🔞</span>Disable Safety Filters</label>
-                                            <label class="switch">
-                                                <input type="checkbox" id="nsfw-toggle" name="nsfw_toggle">
-                                                <span class="switch__slider"></span>
-                                            </label>
-                                        </div>
-                                    </fieldset>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" id="generate-btn" class="btn btn--primary"><span class="icon">✨</span>Generate</button>
-                    </form>
-                </div>
-                <div class="card card--history">
-                    <div class="history-section">
-                        <div class="history-section__header">
-                            <h3>History Images</h3>
-                            <div class="history-section__controls">
-                                <span class="refresh-icon">↻</span>
-                                <select class="form-input form-input--select">
-                                    <option>12 items</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="history-section__grid" id="history-grid">
-                            <div class="history-section__placeholder">
-                                <p>Generated images will appear here</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Video Generation View -->
-            <div class="content-grid" id="video-generation-view" style="display: none;">
-                 <div class="card card--form">
-                    <form class="video-generator-form" id="video-generator-form">
-                        <div class="form-scroll-wrapper">
-                            <fieldset class="form-section">
-                                <div class="form-section__header">
-                                    <h2>AI Video Generator</h2>
-                                    <button type="button" class="link">Video Settings Guide</button>
-                                </div>
-                                <div class="setting setting--vertical">
-                                    <label for="video-model-select" class="setting__label"><span class="icon">🎥</span>Video Model</label>
-                                    <select id="video-model-select" name="model" class="form-input form-input--select">
-                                        <option>Loading models...</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="prompt-group mt-md">
-                                    <label for="video-prompt-input" class="visually-hidden">Prompt</label>
-                                    <textarea id="video-prompt-input" name="prompt" class="form-input form-input--textarea" placeholder="Describe the video you want to generate..." required></textarea>
-                                </div>
-                            </fieldset>
-                            <fieldset class="form-section settings-grid">
-                                <div class="setting setting--vertical">
-                                    <label for="duration-select" class="setting__label"><span class="icon">⏱️</span>Duration (seconds)</label>
-                                    <select id="duration-select" name="duration" class="form-input form-input--select">
-                                        <option value="4">4</option>
-                                    </select>
-                                </div>
-                                <div class="setting setting--vertical">
-                                    <label for="quality-select-video" class="setting__label"><span class="icon">📏</span>Quality</label>
-                                    <select id="quality-select-video" name="quality" class="form-input form-input--select">
-                                        <option value="480p">480p</option>
-                                    </select>
-                                </div>
-                                <div class="setting setting--vertical">
-                                    <label for="ratio-select" class="setting__label"><span class="icon">↔️</span>Aspect Ratio</label>
-                                    <select id="ratio-select" name="ratio" class="form-input form-input--select">
-                                        <option value="1:1">1:1</option>
-                                        <option value="16:9">16:9</option>
-                                        <option value="9:16">9:16</option>
-                                        <option value="3:4">3:4</option>
-                                        <option value="4:3">4:3</option>
-                                    </select>
-                                </div>
-                                <div class="setting setting--full-width">
-                                    <label id="video-num-videos-label" class="setting__label"><span class="icon">🎞️</span>Num of Videos</label>
-                                    <div class="btn-group" role="radiogroup" aria-labelledby="video-num-videos-label">
-                                        <input type="radio" id="video-n1" name="n" value="1" checked><label for="video-n1" class="btn btn--small">1</label>
-                                        <input type="radio" id="video-n2" name="n" value="2"><label for="video-n2" class="btn btn--small">2</label>
-                                        <input type="radio" id="video-n3" name="n" value="3"><label for="video-n3" class="btn btn--small">3</label>
-                                        <input type="radio" id="video-n4" name="n" value="4"><label for="video-n4" class="btn btn--small">4</label>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                        <button type="submit" id="video-generate-btn" class="btn btn--primary"><span class="icon">✨</span>Generate Video</button>
-                    </form>
-                </div>
-                <div class="card card--history">
-                    <div class="history-section">
-                        <div class="history-section__header">
-                            <h3>History Videos</h3>
-                             <div class="history-section__controls">
-                                <span class="refresh-icon">↻</span>
-                                <select class="form-input form-input--select">
-                                    <option>12 items</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="history-section__grid" id="history-grid-video">
-                            <div class="history-section__placeholder">
-                                <p>Generated videos will appear here</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="hero-bg"></div>
         </main>
-    </div>
 
-    <!-- Lightbox Modal Structure -->
-    <div id="lightbox-modal" class="lightbox">
-        <span class="lightbox__close">×</span>
-        <img class="lightbox__content" id="lightbox-image">
-    </div>
+        <section class="features">
+            <h2 class="section-title">Why VisionCrafter?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔑</div>
+                    <h3>Use Your Own Key</h3>
+                    <p>Completely free to use. Just bring your own API key and pay only for what you generate.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Multi-Model Power</h3>
+                    <p>Access a curated selection of the best models, including FLUX, Imagen, and more, all in one place.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>Advanced Control</h3>
+                    <p>Fine-tune every aspect of your creation with a dynamic UI that adapts to each model's unique parameters.</p>
+                </div>
+                 <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure & Private</h3>
+                    <p>Your API key is stored only in your browser and is never saved on our servers. All requests are proxied securely.</p>
+                </div>
+            </div>
+        </section>
 
-    <!-- API Key Modal -->
-    <div id="api-key-modal" class="lightbox">
-        <div class="api-key-card card">
-            <h2>Enter Your API Key</h2>
-            <p class="api-key-instructions">
-                Please provide your own API key to use VisionCrafter.IO.
-                This allows you to use your own generation credits.
-                You can get a key from the <a href="https://www.a4f.co/" target="_blank" rel="noopener noreferrer">A4F.co dashboard</a>.
-            </p>
-            <input type="password" id="api-key-input" class="form-input" placeholder="ddc-a4f-...">
-            <button id="save-api-key-btn" class="btn btn--primary mt-md">Save & Start Crafting</button>
-        </div>
+        <footer class="landing-footer">
+            <p>© 2024 VisionCrafter.IO. All Rights Reserved.</p>
+        </footer>
     </div>
-
-    <script src="script.js"></script>
 </body>
 </html>
