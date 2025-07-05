@@ -1,4 +1,4 @@
-// In script.js (Final Version with LocalStorage Webhook URL)
+// In script.js (Final Version with Gatekeeper Check)
 
 document.addEventListener('DOMContentLoaded', () => {
     const config = {
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const checkedRadio = document.querySelector(`input[name="${paramName}"]:checked`);
                 if (checkedRadio && checkedRadio.disabled) {
                      const firstEnabledRadio = document.querySelector(`input[name="${paramName}"]:not(:disabled)`);
-                     if(firstEnabledRadio) firstEnabledRadio.checked == true;
+                     if(firstEnabledRadio) firstEnabledRadio.checked = true;
                 }
             }
         }
@@ -393,10 +393,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     return alert('Error: Image URL or prompt not found.');
                 }
                 
-                // Get the webhook URL from localStorage.
                 const n8nWebhookUrl = localStorage.getItem('n8nWebhookUrl');
 
-                // If the URL isn't set, guide the developer on what to do.
                 if (!n8nWebhookUrl) {
                     alert('Admin Action: n8n Webhook URL is not set.\nPlease set it in the console using: \nlocalStorage.setItem(\'n8nWebhookUrl\', \'YOUR_URL\');');
                     return;
@@ -406,7 +404,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     button.innerHTML = '⏳';
                     button.disabled = true;
 
-                    // Use the URL we retrieved from localStorage.
                     fetch(n8nWebhookUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -430,17 +427,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        const closeModal = () => lightboxModal.classList.remove('show');
-        lightboxClose.addEventListener('click', closeModal);
-        lightboxModal.addEventListener('click', (e) => { if (e.target === lightboxModal) closeModal(); });
+        const closeModal = () => { if (lightboxModal) lightboxModal.classList.remove('show'); };
+        if (lightboxClose) lightboxClose.addEventListener('click', closeModal);
+        if (lightboxModal) lightboxModal.addEventListener('click', (e) => { if (e.target === lightboxModal) closeModal(); });
         document.addEventListener('keydown', (e) => { if (e.key === "Escape") closeModal(); });
         
-        saveApiKeyBtn.addEventListener('click', saveApiKey);
-        changeKeyBtn.addEventListener('click', showApiKeyModal);
+        if(saveApiKeyBtn) saveApiKeyBtn.addEventListener('click', saveApiKey);
+        if(changeKeyBtn) changeKeyBtn.addEventListener('click', showApiKeyModal);
     }
 
     // --- INITIALIZATION ---
     function init() {
+        // --- GATEKEEPER CHECK ---
+        const mainAppContainer = document.getElementById('generation-view');
+        if (!mainAppContainer) {
+            console.log("On a page without the main app container, skipping app initialization.");
+            return;
+        }
+
         setupEventListeners();
         fetchModelConfig();
         loadHistory(historyGrid, historyPlaceholder, config.storageKeys.images);
