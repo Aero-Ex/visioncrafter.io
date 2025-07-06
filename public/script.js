@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const config = {
         api: {
             imageGeneration: '/api/images/generations',
-            videoGeneration: '/api/videos/generations'
+            videoGeneration: '/api/video/generations',
+            shareInstagram: '/api/share/instagram' // New endpoint for sharing
         },
         storageKeys: {
             images: 'visionCrafterHistory_images',
@@ -356,18 +357,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         return alert('Error: Image URL or prompt not found.');
                     }
                     
-                    const n8nWebhookUrl = localStorage.getItem('n8nWebhookUrl');
-
-                    if (!n8nWebhookUrl) {
-                        alert('Admin Action: n8n Webhook URL is not set.\nPlease set it in the console using: \nlocalStorage.setItem(\'n8nWebhookUrl\', \'YOUR_URL\');');
-                        return;
-                    }
-
                     if (confirm('This will send the image to the Instagram posting queue. Continue?')) {
                         button.innerHTML = '⏳';
                         button.disabled = true;
 
-                        fetch(n8nWebhookUrl, {
+                        fetch(config.api.shareInstagram, { // <-- UPDATED: Use the proxied endpoint
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
@@ -376,13 +370,17 @@ document.addEventListener('DOMContentLoaded', () => {
                             })
                         })
                         .then(response => {
-                            if (!response.ok) throw new Error(`Webhook failed with status: ${response.status}`);
+                            if (!response.ok) {
+                                return response.text().then(text => { 
+                                    throw new Error(`Server returned an error: ${text}`);
+                                });
+                            }
                             alert('Image sent to Instagram queue successfully!');
                             button.innerHTML = '✅';
                         })
                         .catch(error => {
-                            console.error('Error sending to n8n webhook:', error);
-                            alert('Could not send image to the queue. Please try again.');
+                            console.error('Error sending to sharing service:', error);
+                            alert(`Could not send image to the queue. ${error.message}`);
                             button.innerHTML = '📸';
                             button.disabled = false;
                         });
