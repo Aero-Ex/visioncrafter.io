@@ -7,6 +7,7 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 10000; // Use environment variable for port
+const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL; // Securely get webhook URL from server environment
 
 const API_BASE_URL = 'https://api.a4f.co/v1';
 
@@ -49,8 +50,42 @@ app.post('/api/images/generations', (req, res) => {
     proxyRequest(req, res, '/images/generations');
 });
 
-app.post('/api/videos/generations', (req, res) => {
+app.post('/api/video/generations', (req, res) => {
     proxyRequest(req, res, '/video/generations');
+});
+
+// --- NEW INSTAGRAM SHARE PROXY ROUTE (FIX FOR CORS) ---
+app.post('/api/share/instagram', async (req, res) => {
+    if (!N8N_WEBHOOK_URL) {
+        console.error('N8N_WEBHOOK_URL is not set on the server.');
+        return res.status(500).json({ error: 'Server configuration error: Sharing service is not configured.' });
+    }
+
+    const { imageUrl, prompt } = req.body;
+    if (!imageUrl || !prompt) {
+        return res.status(400).json({ error: 'imageUrl and prompt are required.' });
+    }
+
+    try {
+        const n8nResponse = await fetch(N8N_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ imageUrl, prompt })
+        });
+
+        if (!n8nResponse.ok) {
+            const errorText = await n8nResponse.text();
+            console.error(`n8n webhook call failed with status ${n8nResponse.status}:`, errorText);
+            return res.status(n8nResponse.status).send(errorText || 'Webhook call failed.');
+        }
+
+        const responseData = await n8nResponse.json();
+        res.status(200).json(responseData);
+
+    } catch (error) {
+        console.error('Error proxying request to n8n webhook:', error);
+        res.status(502).json({ error: 'Bad Gateway: Could not connect to the sharing service.' });
+    }
 });
 
 // --- FRONT-END ROUTES ---
