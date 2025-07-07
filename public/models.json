@@ -177,9 +177,9 @@
         "nsfw_toggle": { "type": "boolean", "default": false, "api_name": "moderation", "value_map": { "true": "low", "false": "auto" } }
       }
     },
-  "provider-6/i2vgen-xl": {
-        "name": "i2vgen-xl (Provider 6)",
-        "base_model": "i2vgen-xl",
+  "provider-6/wan-2.1": {
+        "name": "wan-2.1 (Provider 6)",
+        "base_model": "wan-2.1",
         "type": "video",
         "params": {
             "prompt": { "type": "textarea", "required": true },
